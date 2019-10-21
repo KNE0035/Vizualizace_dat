@@ -16,10 +16,16 @@ def listen(event, x, y, flags, param):
 
 def main():
 
-    stepx = 63
-    stepy = 63
-    scale = 0.0063
+    stepx = 4
+    stepy = 4
+    scale = 0.01
     size = (int(2 * (math.pi) / scale) + 1, int(2 * (math.pi) / scale) + 1, 1)
+
+    residue = size[0] % stepx
+
+    size = (size[0] - residue + 1, size[1] - residue + 1)
+
+
     signalImg = np.zeros(size, dtype="uint8")
 
     cv2.namedWindow('image', cv2.WINDOW_FULLSCREEN)
@@ -51,8 +57,6 @@ def main():
                 leftDownPoint = calculateRandomShiftWithRespectToBoundaries(False, True, leftDownPoint, size, randomRangex, randomRangey)
                 rightDownPoint = calculateRandomShiftWithRespectToBoundaries(True, True, rightDownPoint, size, randomRangex, randomRangey)
 
-            if (leftUpperPoint[0] == 300 and leftUpperPoint[1] == 164):
-                print("asf");
             signalImg[leftUpperPoint] = (signalFunction(leftUpperPoint, scale) + 1) * 127
             signalImg[rightUpperPoint] = (signalFunction(rightUpperPoint, scale) + 1) * 127
             signalImg[leftDownPoint] = (signalFunction(leftDownPoint, scale) + 1) * 127
@@ -79,15 +83,11 @@ def main():
             if (x, y) in samplePointsWithQuadrants[keyGridPart]:
                 continue
 
-            if xGridPart * stepx + stepx >= size[0] or yGridPart * stepy + stepy >= size[1]:
-                continue
-
             leftUpperPoint = samplePointsWithQuadrants[keyGridPart][0]
             rightUpperPoint = samplePointsWithQuadrants[keyGridPart][1]
             leftDownPoint = samplePointsWithQuadrants[keyGridPart][2]
             rightDownPoint = samplePointsWithQuadrants[keyGridPart][3]
 
-            #bilinear interpolation
             if(regularGrid):
                 bilinearInterpolationForXY(signalImg, leftUpperPoint, leftDownPoint, rightUpperPoint, rightDownPoint, x, y)
             else:
