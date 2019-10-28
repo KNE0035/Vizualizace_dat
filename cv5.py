@@ -7,6 +7,8 @@ import random
 def main():
     dirname = "./flow_256/"
     files = listdir(dirname)
+    randomPoint = (random.randint(0, 255), random.randint(0, 255))
+    randomPoint = (65, 51)
 
     for file in files:
         fs = cv2.FileStorage(dirname + file, cv2.FILE_STORAGE_READ)
@@ -17,10 +19,10 @@ def main():
         grad_x = cv2.Sobel(xVectorNpData, cv2.CV_32FC1, 1, 0, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
         grad_y = cv2.Sobel(yVectorNpData, cv2.CV_32FC1, 0, 1, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
 
-        grad_y_by_x = cv2.Sobel(yVectorNpData, cv2.CV_32FC1, 1, 0, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
-        grad_x_by_y = cv2.Sobel(xVectorNpData, cv2.CV_32FC1, 0, 1, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
+        #grad_y_by_x = cv2.Sobel(yVectorNpData, cv2.CV_32FC1, 1, 0, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
+        #grad_x_by_y = cv2.Sobel(xVectorNpData, cv2.CV_32FC1, 0, 1, ksize=3, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
 
-        rotMagnitudeImg = grad_y_by_x - grad_x_by_y
+        #rotMagnitudeImg = grad_y_by_x - grad_x_by_y
 
         divergenceImg = grad_x + grad_y
 
@@ -32,10 +34,14 @@ def main():
             for x in range(0, width):
                 ramp = [[210, 210, 255], [0, 0, 255], [0, 0, 0], [255, 0, 0], [255, 210, 210]]
                 divergenceheatMap[x][y] = colorRamp(divergenceImg[x][y], divergenceImg.min(), divergenceImg.max(), ramp, 5)
-                rotMagnitudeHeatMap[x][y] = colorRamp(rotMagnitudeImg[x][y], rotMagnitudeImg.min(), rotMagnitudeImg.max(), ramp, 5)
+                #rotMagnitudeHeatMap[x][y] = colorRamp(rotMagnitudeImg[x][y], rotMagnitudeImg.min(), rotMagnitudeImg.max(), ramp, 5)
+        vectorOnRandomPoint = vectorNpData[randomPoint[0]][randomPoint[1]];
+        length = np.linalg.norm(vectorOnRandomPoint)
+        vectorOnRandomPoint = vectorOnRandomPoint / length
+        divergenceheatMap = cv2.circle(divergenceheatMap, randomPoint, 5, (255, 255, 0), -1)
 
         cv2.imshow("divergence", divergenceheatMap)
-        cv2.imshow("rotation magnitude", rotMagnitudeHeatMap)
+        #cv2.imshow("rotation magnitude", rotMagnitudeHeatMap)
         cv2.waitKey(1)
         print(dirname + file)
 
