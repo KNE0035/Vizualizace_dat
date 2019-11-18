@@ -50,8 +50,8 @@ def main():
     points = pointsEdges[0]
     edges = pointsEdges[1]
 
-    t = 1
-    iter = 20
+    t = 2
+    iter = 30
     dt = 0.2
     drawGraph(points, edges, 0)
     for it in range(iter):
@@ -68,11 +68,11 @@ def main():
             secondPoint.force = secondPoint.force.add(Fa(firstPoint.point, secondPoint.point))
 
         for forcePoint in points:
-            forcePoint.point = forcePoint.point.add(forcePoint.force.scalarMultiply(1 / forcePoint.force.norm()).scalarMultiply(t * forcePoint.force.norm()))
+            forcePoint.point = forcePoint.point.add(forcePoint.force.scalarMultiply(1 / forcePoint.force.norm()).scalarMultiply(min(t, forcePoint.force.norm())))
             forcePoint.point.x = int(forcePoint.point.x)
             forcePoint.point.y = int(forcePoint.point.y)
             drawGraph(points, edges, 10)
-
+        t = t - dt
     drawGraph(points, edges, 0)
 
 def Fr(p1, p2):
