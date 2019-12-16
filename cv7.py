@@ -57,7 +57,7 @@ def main():
     dt = 0.00001
     drawGraph(points, edges, 0)
     for it in range(iter):
-        #print(it)
+
         for i in range(N):
             points[i].force = Vector2d(0, 0)
             for j in range(N):

@@ -32,7 +32,7 @@ def main():
     cv2.setMouseCallback('image', listen, [signalImg])
 
     signalImgReference = np.zeros(size, dtype="uint8")
-    regularGrid = False
+    regularGrid = True
     randomRangex = int(stepx / 3)
     randomRangey = int(stepy / 3)
     randomShiftx = 0
@@ -97,14 +97,6 @@ def main():
     cv2.imshow("reference", signalImgReference)
     cv2.waitKey()
 
-    error = 0
-    for y in range(0, size[1]):
-        for x in range(0, size[0]):
-            error += math.fabs(signalImg[x, y] - signalImgReference[x, y])
-
-    error = error / (size[0] * size[1])
-    print(error)
-
 def createJacobian(r, s, p1, p2, p3, p4):
     # dt_dr = s * (p3 -p4) + (1 - s) * (-p1 + p2)
     # dt_ds - -p1*(1-r) - p2*r + p3*r + p4*(1-r)
@@ -155,13 +147,19 @@ def getRSByNewtonsMethod( leftUpperPoint, leftDownPoint, rightUpperPoint, rightD
 
 
 def bilinearInterpolationForXY(signalImg, leftUpperPoint, leftDownPoint, rightUpperPoint, rightDownPoint, x, y):
-    f_00 = int(signalImg[leftUpperPoint])
-    f_01 = int(signalImg[leftDownPoint])
-    f_10 = int(signalImg[rightUpperPoint])
-    f_11 = int(signalImg[rightDownPoint])
+    f_00 = float(signalImg[leftUpperPoint])
+    f_01 = float(signalImg[leftDownPoint])
+    f_10 = float(signalImg[rightUpperPoint])
+    f_11 = float(signalImg[rightDownPoint])
     x_ = x - leftUpperPoint[0]
     y_ = y - leftUpperPoint[1]
-    signalImg[x, y] = (f_00 * (1 - x_) * (1 - y_)) + (f_10 * x_ * (1 - y_)) + (f_01 * (1 - x_) * y_) + (f_11 * x_ * y_)
+
+    Rx1 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_00 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_10;
+    Rx2 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_01 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_11;
+
+    value = ((rightUpperPoint[1] - y) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx1 + ((y - leftDownPoint[1]) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx2;
+
+    signalImg[x, y] = value
 
 def calculateRandomShiftWithRespectToBoundaries(shiftPositivex, shiftPositivey, point, boundaries, randomRangex, randomRangey):
     randomShiftx = random.randint(0, randomRangex) if shiftPositivex else random.randint(-randomRangex, 0)
