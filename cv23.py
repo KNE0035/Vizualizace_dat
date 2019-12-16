@@ -16,8 +16,8 @@ def listen(event, x, y, flags, param):
 
 def main():
 
-    stepx = 4
-    stepy = 4
+    stepx = 10
+    stepy = 10
     scale = 0.01
     size = (int(2 * (math.pi) / scale) + 1, int(2 * (math.pi) / scale) + 1, 1)
 
@@ -32,7 +32,7 @@ def main():
     cv2.setMouseCallback('image', listen, [signalImg])
 
     signalImgReference = np.zeros(size, dtype="uint8")
-    regularGrid = True
+    regularGrid = False
     randomRangex = int(stepx / 3)
     randomRangey = int(stepy / 3)
     randomShiftx = 0
@@ -157,7 +157,7 @@ def bilinearInterpolationForXY(signalImg, leftUpperPoint, leftDownPoint, rightUp
     Rx1 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_00 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_10;
     Rx2 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_01 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_11;
 
-    value = ((rightUpperPoint[1] - y) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx1 + ((y - leftDownPoint[1]) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx2;
+    value = ((rightUpperPoint[1] - y) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx2 + ((y - leftDownPoint[1]) / (rightUpperPoint[1] - rightDownPoint[1])) * Rx1;
 
     signalImg[x, y] = value
 
