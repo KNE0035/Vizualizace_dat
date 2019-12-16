@@ -18,7 +18,7 @@ def main():
 
     stepx = 10
     stepy = 10
-    scale = 0.01
+    scale = 0.1
     size = (int(2 * (math.pi) / scale) + 1, int(2 * (math.pi) / scale) + 1, 1)
 
     residue = size[0] % stepx
@@ -151,8 +151,6 @@ def bilinearInterpolationForXY(signalImg, leftUpperPoint, leftDownPoint, rightUp
     f_01 = float(signalImg[leftDownPoint])
     f_10 = float(signalImg[rightUpperPoint])
     f_11 = float(signalImg[rightDownPoint])
-    x_ = x - leftUpperPoint[0]
-    y_ = y - leftUpperPoint[1]
 
     Rx1 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_00 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_10;
     Rx2 = ((rightUpperPoint[0] - x) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_01 + ((x - leftUpperPoint[0]) / (rightUpperPoint[0] - leftUpperPoint[0])) * f_11;
